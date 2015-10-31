@@ -15,25 +15,35 @@ POST /thermo/all?updated_temp=
 */
 
 router.post('/new', function addNewThermo(req,res){
+  var fullname = req.body.fullname;
   var username = req.body.username;
   var password = req.body.password;
   var response = '';
   nest.login(username, password, function (err, data) {
     if (err) {
-        console.log(err.message);
-        process.exit(1);
-        return;
-    }
-    nest.fetchStatus(function (data) {
-        for (var deviceId in data.device) {
-            if (data.device.hasOwnProperty(deviceId)) {
-                var device = data.shared[deviceId];
-                console.log('name: ' + device.name);
-            }
+        res.status(400);
+        res.send('Invalid login credentials');
+    } else {
+      nest.fetchStatus(function (data) {
+        if (!data){
+          res.status(400);
+          res.send('No data response');
+        } else {
+          for (var deviceId in data.device) {
+              if (data.device.hasOwnProperty(deviceId)) {
+                  var device = data.shared[deviceId];
+                  var name = device.name;
+                  response = response + name;
+                  //console.log('name: ' + name);
+              }
+          }
+          //subscribe();
+          console.log('response: ' +  response);
+          res.status(200);
+          res.send(response);
         }
-        //subscribe();
-        res.send(response);
-    });
+      }); //  fetchStatus callback
+    } // else
   });
   //console.log('Response: ' + response);
 });
