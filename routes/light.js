@@ -6,10 +6,10 @@ var Hue = require('philips-hue-api');
 var username = '1ed3f31c3acf5785314ef90f6354675';
 var bridge_ip = '172.16.1.2';
 var URL = 'http://' + bridge_ip + '/api/' + username + '/';
-var local_test = 'http://localhost:8000/api/newdeveloper/';
+var LOCAL_URL = 'http://localhost:8000/api/newdeveloper/';
 // get all lights data
 router.get('/getall', function(req,res){
-    hue = Hue(URL);
+    hue = Hue(LOCAL_URL);
     hue.lights().list(function(error, lights){
       if(error){
         res.status(400);
@@ -23,7 +23,7 @@ router.get('/getall', function(req,res){
 // switching light on
 router.get('/on/:light_id', function(req,res){
 	var light_id = req.params.thermo_id;
-    hue = Hue(URL);
+    hue = Hue(LOCAL_URL);
     hue.lights(light_id).on();
     console.log("light:" + light_id + " switched on!!")
   });
@@ -31,7 +31,7 @@ router.get('/on/:light_id', function(req,res){
 // switching light off
 router.get('/off/:light_id', function(req,res){
 	var light_id = req.params.thermo_id;
-    hue = Hue(URL);
+    hue = Hue(LOCAL_URL);
     hue.lights(light_id).off();
     console.log("light:" + light_id + " switched off!!")
   });

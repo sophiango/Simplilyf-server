@@ -95,6 +95,25 @@ router.post('/away', function setAwayMode(req,res){
   });
 });
 
+router.post('/home', function setAwayMode(req,res){
+  nest.fetchStatus(function (data) {
+   if (!data){
+     res.status(400);
+     res.send('Unable to fetch data');
+   }
+    for (var deviceId in data.device) {
+      console.log('device: ' + deviceId);
+        if (data.device.hasOwnProperty(deviceId)) {
+                var device = data.shared[deviceId];
+                // here's the device and ID
+                nest.setHome();
+        }
+    }
+    res.send("Successfully set away mode ");
+  });
+});
+
+
 router.get('/all',function getStatusAllThermo(req,res){
   nest.fetchStatus(function getData(data) {
       for (var deviceId in data.device) {
