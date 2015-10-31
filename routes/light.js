@@ -15,27 +15,49 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 // get all lights data
 router.get('/getall', function(req,res){
-    hue = Hue('http://localhost:8000/api/newdeveloper');
-    hue.lights().list(function(error, lights){
-    	console.log(lights);
-    });
-  });  
+  hue = Hue('http://localhost:8000/api/newdeveloper/lights');
+  hue.lights().list(function(error, lights){
+    console.log(lights);
+  });
+});  
+
+// get one particular light data
+router.get('/getlight/:light_id', function(req,res){
+  var light_id = req.params.light_id;
+  hue = Hue('http://localhost:8000/api/newdeveloper/lights');
+  hue.lights().getState(function(error, light){
+    console.log(light.lights[light_id.toString()]);
+  });
+});  
 
 // switching light on
-router.get('/on/:light_id', function(req,res){
-	var light_id = req.params.thermo_id;
-    hue = Hue('http://localhost:8000/api/newdeveloper');
-    hue.lights(light_id).on();
-    console.log("light:" + light_id + " switched on!!")
-  }); 
+router.post('/on/:light_id', function(req,res){
+  var light_id = req.params.light_id;
+  console.log("light id: " + light_id);
+  hue = Hue('http://localhost:8000/api/newdeveloper/lights');
+  hue.lights(parseInt(light_id)).on();
+  console.log("light:" + light_id + " switched on!!");
+}); 
 
 // switching light off
-router.get('/off/:light_id', function(req,res){
-	var light_id = req.params.thermo_id;
-    hue = Hue('http://localhost:8000/api/newdeveloper');
-    hue.lights(light_id).off();
-    console.log("light:" + light_id + " switched off!!")
+router.post('/off/:light_id', function(req,res){
+  var light_id = req.params.light_id;
+  console.log("light id: " + light_id);
+  hue = Hue('http://localhost:8000/api/newdeveloper/lights');
+  hue.lights(parseInt(light_id)).off();
+  console.log("light:" + light_id + " switched off!!")
+});  
+
+// change light color
+// Can be: red, orange, yellow, green, white, blue, purple, magenta, or pink.
+router.post('/change/:light_id/:colorname', function(req,res){
+  var light_id = req.params.light_id;
+  var new_color = req.params.colorname;
+    hue = Hue('http://localhost:8000/api/newdeveloper/lights');
+    hue.lights(parseInt(light_id)).lightcolor(new_color);
+    console.log("Color is changed to " + new_color + "for light: " + light_id);
   });  
+
 module.exports = router;
 
 
