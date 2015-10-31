@@ -1,6 +1,6 @@
 var express = require('express');
 var path = require('path');
-var favicon = require('static-favicon');
+// var favicon = require('static-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
@@ -14,8 +14,11 @@ var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+<<<<<<< HEAD
 
 app.use(favicon());
+=======
+>>>>>>> 56f060f9e753cf7cc39647c9bd0001dadd997a81
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
@@ -38,12 +41,12 @@ app.use(flash());
 // Initialize Passport
 var initPassport = require('./passport/init');
 initPassport(passport);
-
 var routes = require('./routes/index')(passport);
 app.use('/', routes);
-
 var thermo = require('./routes/thermo');
 app.use('/thermo',thermo);
+var light = require('./routes/light');
+app.use('/light',light);
 
 var light = require('./routes/light');
 app.use('/light',light);

@@ -20,6 +20,26 @@ module.exports = function(passport){
 			res.send("Hello world!");
 	});
 
+  /*Handle Nest Login POST*/
+  // router.post('/auth/nest',passport.authenticate('nest'),function(req,res){
+  //   clientID: req.body.NEST_ID;
+  //   clientSecret: req.body.NEST_SECRET;
+  //   if (req.isAuthenticated()){
+	// 		res.send('Successfully authorize nest user ' + req.session.passport.user.accessToken);
+	// 	} else {
+  //     res.send('Error');
+  //   }
+  // });
+  //
+  // router.post('/auth/nest/callback',
+  //       passport.authenticate('nest', { }),
+  //       function(req, res) {
+  //         clientID: req.body.NEST_ID;
+  //         clientSecret: req.body.NEST_SECRET;
+  //         res.send('Token: ' + req.user.accessToken)
+  //       }
+  //      );
+
 	/* Handle Login POST */
 	router.post('/signin', passport.authenticate('signin'), function(req,res){
 		if (req.isAuthenticated()){
