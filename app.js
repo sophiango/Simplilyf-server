@@ -14,6 +14,8 @@ var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+
+app.use(favicon());
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
@@ -40,6 +42,9 @@ var routes = require('./routes/index')(passport);
 app.use('/', routes);
 var thermo = require('./routes/thermo');
 app.use('/thermo',thermo);
+var light = require('./routes/light');
+app.use('/light',light);
+
 var light = require('./routes/light');
 app.use('/light',light);
 
