@@ -21,6 +21,13 @@ var LOCAL_URL = 'http://localhost:8000/api/newdeveloper/';
 //       }
 //     });
 // });
+// get all lights data
+router.get('/getall', function(req,res){
+  hue = Hue('http://localhost:8000/api/newdeveloper/');
+  hue.lights().list(function(error, lights){
+    console.log(lights);
+  });
+});
 
 // get one particular light data
 router.get('/getlight/:light_id', function(req,res){
@@ -43,17 +50,22 @@ router.post('/on/:light_id', function(req,res){
   //console.log("light id: " + light_id);
   hue = Hue(LOCAL_URL);
   hue.lights(parseInt(light_id)).on();
-  //console.log("light:" + light_id + " switched on!!");
+  hue.lights(parseInt(light_id)).getState(function(error, res){
+    console.log(res.state.on);
+    console.log("light:" + light_id + " switched on!!");
+  });
 });
 
 // switching light off
-
 router.post('/off/:light_id', function(req,res){
   var light_id = req.params.light_id;
   console.log("light id: " + light_id);
-  hue = Hue(LOCAL_URL);
+  hue = Hue('http://localhost:8000/api/newdeveloper/');
   hue.lights(parseInt(light_id)).off();
-  console.log("light:" + light_id + " switched off!!")
+  hue.lights(parseInt(light_id)).getState(function(error, res){
+    console.log(res.state.on);
+    console.log("light:" + light_id + " switched off!!");
+  });
 });
 
 // change light color
@@ -61,9 +73,11 @@ router.post('/off/:light_id', function(req,res){
 router.post('/change/:light_id/:colorname', function(req,res){
   var light_id = req.params.light_id;
   var new_color = req.params.colorname;
-    hue = Hue(LOCAL_URL);
-    hue.lights(parseInt(light_id)).lightcolor(new_color);
+  hue = Hue(LOCAL_URL);
+  hue.lights(parseInt(light_id)).getState(function(error, res){
+    console.log(res.state.hue);
     console.log("Color is changed to " + new_color + "for light: " + light_id);
+  });
 });
 
 module.exports = router;
