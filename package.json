@@ -12,6 +12,15 @@
     "ejs": "~2.3.3",
     "express": "~4.13.1",
     "morgan": "~1.6.1",
-    "serve-favicon": "~2.3.0"
+    "serve-favicon": "~2.3.0",
+    "mongoose":"*",
+    "bcrypt-nodejs": "0.0.3",
+    "nodemon": "^1.7.2",
+    "passport": "^0.3.0",
+    "philips-hue-api": "^0.1.6",
+    "serve-favicon": "~2.3.0",
+    "unofficial-nest-api":"*",
+    "passport-local":"*",
+    "chance":"*"
   }
 }
