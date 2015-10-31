@@ -14,11 +14,8 @@ var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-<<<<<<< HEAD
 
 app.use(favicon());
-=======
->>>>>>> 56f060f9e753cf7cc39647c9bd0001dadd997a81
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
