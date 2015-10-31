@@ -1,6 +1,5 @@
 var signin = require('./signin');
 var signup = require('./signup');
-var nestLogin = require('./nest');
 var User = require('../models/user');
 
 module.exports = function(passport){

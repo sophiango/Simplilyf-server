@@ -3,7 +3,6 @@ var router = express.Router();
 var nest = require('unofficial-nest-api');
 // var username = 'sophia2901@gmail.com';
 // var password = 'test@CMPE295';
-NestStrategy = require('passport-nest').Strategy;
 
 /*
 POST /thermo/addNew
@@ -18,7 +17,6 @@ router.post('/new', function addNewThermo(req,res){
   var fullname = req.body.fullname;
   var username = req.body.username;
   var password = req.body.password;
-  var response = '';
   nest.login(username, password, function (err, data) {
     if (err) {
         res.status(400);
@@ -29,6 +27,7 @@ router.post('/new', function addNewThermo(req,res){
           res.status(400);
           res.send('No data response');
         } else {
+          var response = '';
           for (var deviceId in data.device) {
               if (data.device.hasOwnProperty(deviceId)) {
                   var device = data.shared[deviceId];
@@ -40,7 +39,7 @@ router.post('/new', function addNewThermo(req,res){
           //subscribe();
           console.log('response: ' +  response);
           res.status(200);
-          res.send(response);
+          res.JSON(response);
         }
       }); //  fetchStatus callback
     } // else
