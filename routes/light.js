@@ -50,9 +50,16 @@ router.post('/on/:light_id', function(req,res){
   //console.log("light id: " + light_id);
   hue = Hue(LOCAL_URL);
   hue.lights(parseInt(light_id)).on();
-  hue.lights(parseInt(light_id)).getState(function(error, res){
-    console.log(res.state.on);
-    console.log("light:" + light_id + " switched on!!");
+  hue.lights(parseInt(light_id)).getState(function(error, light){
+    if(error){
+      res.status(400);
+      res.send('Error: ' + error);
+    } else {
+      res.status(200);
+      res.send(light);
+    }
+    //console.log(res.state.on);
+    //console.log("light:" + light_id + " switched on!!");
   });
 });
 
@@ -62,9 +69,16 @@ router.post('/off/:light_id', function(req,res){
   console.log("light id: " + light_id);
   hue = Hue('http://localhost:8000/api/newdeveloper/');
   hue.lights(parseInt(light_id)).off();
-  hue.lights(parseInt(light_id)).getState(function(error, res){
-    console.log(res.state.on);
-    console.log("light:" + light_id + " switched off!!");
+  hue.lights(parseInt(light_id)).getState(function(error, light){
+    if(error){
+      res.status(400);
+      res.send('Error: ' + error);
+    } else {
+      res.status(200);
+      res.send(light);
+    }
+    // console.log(res.state.on);
+    // console.log("light:" + light_id + " switched off!!");
   });
 });
 
@@ -74,9 +88,16 @@ router.post('/change/:light_id/:colorname', function(req,res){
   var light_id = req.params.light_id;
   var new_color = req.params.colorname;
   hue = Hue(LOCAL_URL);
-  hue.lights(parseInt(light_id)).getState(function(error, res){
-    console.log(res.state.hue);
-    console.log("Color is changed to " + new_color + "for light: " + light_id);
+  hue.lights(parseInt(light_id)).getState(function(error, light){
+    if(error){
+      res.status(400);
+      res.send('Error: ' + error);
+    } else {
+      res.status(200);
+      res.send(light);
+    }
+    // console.log(res.state.hue);
+    // console.log("Color is changed to " + new_color + "for light: " + light_id);
   });
 });
 
