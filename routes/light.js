@@ -88,6 +88,7 @@ router.post('/change/:light_id/:colorname', function(req,res){
   var light_id = req.params.light_id;
   var new_color = req.params.colorname;
   hue = Hue(LOCAL_URL);
+  hue.lights(parseInt(light_id)).lightcolor(new_color);
   hue.lights(parseInt(light_id)).getState(function(error, light){
     if(error){
       res.status(400);
