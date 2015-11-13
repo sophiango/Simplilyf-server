@@ -43,16 +43,23 @@ router.post('/new', function addNewThermo(req,res){
           res.status(400);
           res.send('No data response');
         } else {
+          //console.log('DATA ' + JSON.stringify(data.device));
           var response = '';
-          var device;
+          var devices = [];
           for (var deviceId in data.device) {
             //var object = JSON.stringify(data.device);
             //console.log(object);
               if (data.device.hasOwnProperty(deviceId)) {
                   device = data.shared[deviceId];
-                  response = response + (JSON.stringify(device));
+                  //response = response + (JSON.stringify(device));
+                  //response = response + device;
+                  // devices.push(device);
+                  var tempInF = nest.ctof(device.target_temperature);
+                  //devices.push({name:device.name,target_temperature:tempInF});
+                  devices.push({device:device});
+                  // console.log(JSON.stringify(device));
               }
-                response = response + '/';
+                //response = response + '/';
           }
           // var user = req.session.passport.user;
           // console.log('user: ' + user);
@@ -76,8 +83,11 @@ router.post('/new', function addNewThermo(req,res){
           //     }
           // );
           //subscribe();
+          console.log(JSON.stringify(devices));
           res.status(200);
-          res.send(response.toString());
+          res.send(JSON.stringify(devices));
+          //res.send(response);
+
         }
       }); //  fetchStatus callback
     } // else
