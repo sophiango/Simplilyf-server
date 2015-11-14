@@ -8,7 +8,7 @@ module.exports = function(passport){
 	passport.use('signup', new LocalStrategy({
             passReqToCallback : true // allows us to pass back the entire request to the callback
         },
-        function(req, username, password, done) {
+    function(req, username, password, done) {
 			var email = req.body.email;
 			console.log('Signing up');
 
@@ -30,15 +30,15 @@ module.exports = function(passport){
                     } else {
                         // if there is no user with that email
                         // create the user
-						var username = req.body.username;
-						var password = req.body.password;
-						var fullname = req.body.fullname;
-						var random_id = chance.natural({min: 1, max: 100000}).toString();
+												var username = req.body.username;
+												var password = req.body.password;
+												var fullname = req.body.fullname;
+												var random_id = chance.natural({min: 1, max: 100000}).toString();
 
                         var newUser = new User();
 
                         // set the user's local credentials
-						newUser.user_id = random_id;
+												newUser.user_id = random_id;
                         newUser.username = username;
                         newUser.password = createHash(password);
                         newUser.email = email;
