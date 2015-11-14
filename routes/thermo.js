@@ -118,7 +118,7 @@ router.put('/', function changeTempByName(req,res){
     var thermo_name = req.body.thermo_name;
     var updated_temp = req.body.updated_temp;
     var thermo_id = req.body.thermo_id;
-    var userId = req.user.user_id;
+    //var userId = req.user.user_id;
     var success = false;
     nest.fetchStatus(function (data) {
       for (var deviceId in data.device) {
@@ -133,23 +133,25 @@ router.put('/', function changeTempByName(req,res){
         }
       }
 
-      console.log('user id: ' + userId);
-      if (success === true){
-      var newThermoRecord = {
-        thermo_name : thermo_name,
-        current_temp : updated_temp,
-        user_id : userId,
-        thermo_id : thermo_id,
-        thermo_mode : "away",
-        operation : 1
-      };
-      console.log("success? " + success);
-        res.status(200);
-        res.send('Successfully change temperature to ' + updated_temp);
-      } else {
-        res.status(400);
-        res.send('Unable to change the temperature. Please try again later');
-      }
+      // console.log('user id: ' + userId);
+      // if (success === true){
+      // var newThermoRecord = {
+      //   thermo_name : thermo_name,
+      //   current_temp : updated_temp,
+      //   user_id : userId,
+      //   thermo_id : thermo_id,
+      //   thermo_mode : "away",
+      //   operation : 1
+      // };
+      // console.log("success? " + success);
+      //   res.status(200);
+      //   res.send('Successfully change temperature to ' + updated_temp);
+      // } else {
+      //   res.status(400);
+      //   res.send('Unable to change the temperature. Please try again later');
+      // }
+      res.status(200);
+      res.send("Complete");
     });
 });
 
@@ -207,7 +209,6 @@ router.post('/all/temp/:temp', function changeTemp(req,res){
 
 // When setting away mode, all thermostat in the houses will be change status
 router.put('/mode', function setAwayMode(req,res){
-  var thermo_name = req.body.thermo_name;
   var mode = req.body.thermo_mode;
   nest.fetchStatus(function (data) {
    if (!data){
