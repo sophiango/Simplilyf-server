@@ -30,7 +30,7 @@ var LOCAL_URL = 'http://localhost:8000/api/newdeveloper/';
 // });
 // get all lights data
 router.get('/getall', function(req,res){
-  hue = Hue('http://localhost:8000/api/newdeveloper/');
+  hue = Hue(LOCAL_URL);
   hue.lights().list(function(error, lights){
     console.log(lights);
   });
@@ -62,6 +62,7 @@ router.get('/getlight/:light_id', function(req,res){
     newLight.sat = light.state.sat;
     newLight.reachable = light.state.reachable;
     newLight.type = light.type;
+    newLight.operation = 1;
     newLight.save();
   });
 });
@@ -105,6 +106,7 @@ router.post('/on/:light_id', function(req,res){
           newLight.sat = res.sat;
           newLight.reachable = res.reachable;
           newLight.type = res.type;
+          newLight.operation = 2;
           newLight.save();
         }
       }
@@ -116,7 +118,7 @@ router.post('/on/:light_id', function(req,res){
 router.post('/off/:light_id', function(req,res){
   var light_id = req.params.light_id;
   //console.log("light id: " + light_id);
-  hue = Hue('http://localhost:8000/api/newdeveloper/');
+  hue = Hue(LOCAL_URL);
   hue.lights(parseInt(light_id)).off();
   hue.lights(parseInt(light_id)).getState(function(error, light){
     if(error){
@@ -151,6 +153,7 @@ router.post('/off/:light_id', function(req,res){
           newLight.sat = res.sat;
           newLight.reachable = res.reachable;
           newLight.type = res.type;
+          newLight.operation = 3;
           newLight.save();
         }
       }
@@ -163,7 +166,7 @@ router.post('/off/:light_id', function(req,res){
 router.post('/change/:light_id/:colorname', function(req,res){
   var light_id = req.params.light_id;
   var new_color = req.params.colorname;
-    hue = Hue('http://localhost:8000/api/newdeveloper/');
+    hue = Hue(LOCAL_URL);
     hue.lights(parseInt(light_id)).lightcolor(new_color);
     hue.lights(parseInt(light_id)).getState(function(error, light){
       if(error){
@@ -199,6 +202,7 @@ router.post('/change/:light_id/:colorname', function(req,res){
           newLight.sat = res.sat;
           newLight.reachable = res.reachable;
           newLight.type = res.type;
+          newLight.operation = 4;
           newLight.save();
         }
       }
