@@ -5,15 +5,6 @@ var User = require('../models/user');
 // var username = 'sophia2901@gmail.com';
 // var password = 'Cmpe@295';
 
-/*
-POST /thermo/addNew
-DELETE /thermo/{thermo_id}
-GET /thermo/{thermo_id}
-POST /thermo/{thermo_id}?updated_temp=
-GET /thermo/all
-POST /thermo/all?updated_temp=
-*/
-
 router.post('/signin',function nestSignin(req,res){
   var username = req.body.username;
   var password = req.body.password;
@@ -55,8 +46,8 @@ router.post('/new', function addNewThermo(req,res){
                   //response = response + device;
                   // devices.push(device);
                   var tempInF = nest.ctof(device.target_temperature);
-                  //devices.push({name:device.name,target_temperature:tempInF});
-                  devices.push({device:device});
+                  devices.push({name:device.name,current_temp:tempInF});
+                  // devices.push({device:device});
                   // console.log(JSON.stringify(device));
               }
                 //response = response + '/';
@@ -234,12 +225,13 @@ router.put('/', function changeTempByName(req,res){
             var device = data.shared[deviceId];
             if (device.name == thermo_name){
                 nest.setTemperature(deviceId, updated_temp);
-                if(nest.ctof(device.target_temperature)==updated_temp){
+                if(nest.ctof(device.target_temperature)===updated_temp){
                   success = true;
                 }
             }
         }
       }
+      console.log("success? " + success);
       if (success === true){
         res.status(200);
         res.send('Successfully change temperature to ' + updated_temp);
