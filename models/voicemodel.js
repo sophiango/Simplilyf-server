@@ -55,7 +55,34 @@ var mongoSchema = new mongoose.Schema({
             },
             "minItems": 1
         },
-
+"set_away":{
+  "type": "array",
+  "items": {
+      "type": "string"
+  },
+  "minItems": 1
+},
+"set_home":{
+  "type": "array",
+  "items": {
+      "type": "string"
+  },
+  "minItems": 1
+},
+"set_all":{
+  "type": "array",
+  "items": {
+      "type": "string"
+  },
+  "minItems": 1
+},
+"set_color":{
+  "type": "array",
+  "items": {
+      "type": "string"
+  },
+  "minItems": 1
+}
 });
 //create a schema
 

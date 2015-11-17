@@ -107,7 +107,42 @@ router.post('/search', function(req,res){
 			final_list="turn_off";
 		}
 	}
-
+  var set_away=data[0].set_away;
+  for(i=0;i<set_away.length;i++){
+    temp= set_away[i].toUpperCase();
+    if(str_check==temp){
+      console.log("found in set_away");
+      flag=1;
+      final_list="set_away";
+    }
+  }
+  var set_home=data[0].set_home;
+  for(i=0;i<set_home.length;i++){
+    temp= set_home[i].toUpperCase();
+    if(str_check==temp){
+      console.log("found in set_home");
+      flag=1;
+      final_list="set_home";
+    }
+  }
+  var set_all=data[0].set_all;
+  for(i=0;i<set_all.length;i++){
+    temp= set_all[i].toUpperCase();
+    if(str_check==temp){
+      console.log("found in set_all");
+      flag=1;
+      final_list="set_all";
+    }
+  }
+  var set_color=data[0].set_color;
+  for(i=0;i<set_color.length;i++){
+    temp= set_color[i].toUpperCase();
+    if(str_check==temp){
+      console.log("found in set_color");
+      flag=1;
+      final_list="set_color";
+    }
+  }
 	if(flag==0)
 		{
 			final_list="empty";
