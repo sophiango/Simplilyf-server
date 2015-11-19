@@ -1,17 +1,19 @@
 var mongoose = require ('mongoose');
 
-var LightSchema = new mongoose.Schema({
-	id : String,
+var LightRecord = new mongoose.Schema({
+	record_id : String,
+	light_id : String,
 	name : String,
-  	currentTS : {type:Date, default: Date.now},
+  created_at:{type:Date, default: Date.now},
 	modelid : String,
 	onStatus : Boolean,
 	bri : Number,
-  	hue : Number,
+  hue : Number,
 	sat : Number,
 	reachable : Boolean,
-  	type : String,
-  	operation : Number
-},{ _id : false });
+  type : String,
+  operation : String,
+	user_id : String
+});
 
-module.exports = mongoose.model('Light', LightSchema, 'light_data');
+module.exports = mongoose.model('LightRecord', LightRecord);

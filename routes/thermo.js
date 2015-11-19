@@ -1,3 +1,5 @@
+/* Authored by Sophia Ngo*/
+
 var express = require('express');
 var router = express.Router();
 var nest = require('unofficial-nest-api');
@@ -207,7 +209,7 @@ router.put('/', function changeTempByName(req,res){
                       res.send('Unable to store the record into database');
                     } else {
                       res.status(200);
-                      res.send("Successfully change the temperature of " + thermo_name + " to " + updated_temp);
+                      res.send('Successfully change the temperature of ' + thermo_name + ' to ' + updated_temp);
                     }
                   });
 
@@ -271,7 +273,7 @@ router.put('/all', function changeTempAllThermo(req,res){
       setTimeout(function(){
       if (successCount===numThermostat){
         res.status(200);
-        res.send("Successfully change the temperature of " + thermo_name + " to " + updated_temp);
+        res.send('Successfully change the temperature of ' + thermo_name + ' to ' + updated_temp);
       } else {
         res.status(400);
         res.send('Unable to change the temperature for all thermostat');
