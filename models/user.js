@@ -13,6 +13,12 @@ var lightSchema = new mongoose.Schema({
 	light_name:String
 },{ _id : false });
 
+var deviceAccount = new mongoose.Schema({
+	vendor:{type:String,required:true},
+	username: {type:String,required:true},
+	password: {type: String,required:true},
+},{_id:false});
+
 module.exports = mongoose.model('User',{
 	user_id: {type : String , required : true, unique: true, dropDups: true},
 	username: {type : String , required : true},
@@ -21,5 +27,6 @@ module.exports = mongoose.model('User',{
 	email: {type : String , required : true},
 	thermos: [thermoSchema],
 	lights: [lightSchema],
+	devicesAcc: [deviceAccount],
 	createAt: {type: Date, default: Date.now}
 });

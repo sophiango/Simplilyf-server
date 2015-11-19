@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var nest = require('unofficial-nest-api');
 
 // var isAuthenticated = function (req, res, next) {
 // 	// if user is authenticated in the session, call the next() to call the next request handler
@@ -14,37 +15,40 @@ var router = express.Router();
 // }
 
 module.exports = function(passport){
-
-  router.get('/hello',function(req,res){
-		  console.log("Hit hello endpoint");
-			res.send("Hello world!");
-	});
-
-  /*Handle Nest Login POST*/
-  // router.post('/auth/nest',passport.authenticate('nest'),function(req,res){
-  //   clientID: req.body.NEST_ID;
-  //   clientSecret: req.body.NEST_SECRET;
-  //   if (req.isAuthenticated()){
-	// 		res.send('Successfully authorize nest user ' + req.session.passport.user.accessToken);
-	// 	} else {
-  //     res.send('Error');
-  //   }
-  // });
-  //
-  // router.post('/auth/nest/callback',
-  //       passport.authenticate('nest', { }),
-  //       function(req, res) {
-  //         clientID: req.body.NEST_ID;
-  //         clientSecret: req.body.NEST_SECRET;
-  //         res.send('Token: ' + req.user.accessToken)
-  //       }
-  //      );
-
 	/* Handle Login POST */
 	router.post('/signin', passport.authenticate('signin'), function(req,res){
 		if (req.isAuthenticated()){
-			res.send(req.user.email);
+      var thermoAcc;
+      var lightAcc;
+      var user = req.user;
+      if (req.user.devicesAcc.length > 0){
+        for (var i = 0; i < user.devicesAcc.length; i++){
+            if (user.devicesAcc[i].vendor==='nest'){
+              thermoAcc = user.devicesAcc[i];
+            } else if (user.devicesAcc[i].vendor==='philips'){
+              lightAcc = user.devicesAcc[i];
+            }
+        }
+      }
+
+      if(thermoAcc!==undefined){
+        console.log('Logging to Nest to create Nest session ' + thermoAcc);
+        var username = thermoAcc.username;
+        var password = thermoAcc.password;
+        nest.login(username, password, function (err, data) {
+          if (err) {
+              res.status(400);
+              res.send(err);
+          }
+        });
+      }
+      if(lightAcc!==undefined){
+        console.log('Logging to Philips to create Philips session ' + lightAcc);
+      }
+      res.status(200);
+			res.send(req.user);
 		} else {
+      res.status(400);
       res.send('Error');
     }
 	});
