@@ -30,39 +30,72 @@ var LOCAL_URL = 'http://localhost:8000/api/newdeveloper/';
 // });
 // get all lights data
 
+/* Authored by Sophia Ngo */
 router.post('/new',function(req,res){
+  var successCount = 0;
+  var message = '';
   var username = req.body.username;
+  var password = req.body.password;
   var newLight = [
      {
-      vendor:'philip',
-      thermo_id:'1',
-      thermo_name:'test1'},
+      vendor:'philips',
+      light_id:'1',
+      light_name:'light1'},
       {
-        vendor:'philip',
-        thermo_id:'2',
-        thermo_name:'test2'},
+        vendor:'philips',
+        light_id:'2',
+        light_name:'light2'},
       {
-        vendor:'philip',
-        thermo_id:'3',
-        thermo_name:'test3'}
+        vendor:'philips',
+        light_id:'3',
+        light_name:'light3'}
     ];
   // var userEmail = req.user.username;
   User.findOneAndUpdate(
       { 'email' :  username},
-      {$push: {lights:newLight}},
+      {$set: {lights:newLight}},
       {safe: true, upsert: true},
       function(err, model) {
         if (err){
-          res.status(200);
-          res.send(err);
+          message = message + err;
+          console.log('message: ' + message);
         } else {
-          res.status(200);
-          res.send(newLight);
+          successCount++;
         }
       }
     );
+    var philipsAcc = {
+      vendor:'philips',
+      username:username,
+      password:password
+    }
+    User.findOneAndUpdate(
+        { 'email' :  req.user.email},
+    {$push:{devicesAcc:philipsAcc}},
+    {safe: true, upsert: true},
+    function(err, model) {
+      if (err){
+        message = message + err;
+        console.log('message: ' + message);
+      } else {
+        successCount++;
+      }
+    }
+  );
+  setTimeout(function(){
+  if (successCount>=2){
+    res.status(200);
+    res.send('Successfully added light(s) to user account');
+  } else {
+    res.status(400);
+    console.log('message: ' + message);
+    res.send(message);
+  }
+  }, 1000);
 });
 
+
+/* Authored by Prachi Jain */
 router.get('/getall', function(req,res){
   hue = Hue(LOCAL_URL);
   hue.lights().list(function(error, lights){
@@ -146,6 +179,10 @@ router.post('/on/:light_id', function(req,res){
       }
     );
   });
+});
+
+router.post('/off/all', function turnOffAllLight(req,res){
+
 });
 
 // switching light off

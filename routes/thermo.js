@@ -268,6 +268,7 @@ router.put('/all', function changeTempAllThermo(req,res){
                   });
         }
       }
+      setTimeout(function(){
       if (successCount===numThermostat){
         res.status(200);
         res.send("Successfully change the temperature of " + thermo_name + " to " + updated_temp);
@@ -275,6 +276,7 @@ router.put('/all', function changeTempAllThermo(req,res){
         res.status(400);
         res.send('Unable to change the temperature for all thermostat');
       }
+      }, 1000);
     } else {
       res.status(400);
       res.send('Unable to fetch data');
