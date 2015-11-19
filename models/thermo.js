@@ -1,6 +1,7 @@
 var mongoose = require ('mongoose');
 
-var thermo = mongoose.Schema({
+var record = mongoose.Schema({
+  record_id : String,
   created_at:{type:Date, default: Date.now},
   thermo_name : String,
   target_temperature : Number,
@@ -8,10 +9,10 @@ var thermo = mongoose.Schema({
   target_temperature_low : Number,
   target_temperature_mode : String,
   user_id : String,
-  thermo_id : {type:String,unique:true, required:true,dropDups: true},
+  thermo_id : String,
   thermo_mode : String,
-  operation : Number
-});
+  operation : String
+}, { autoIndex: false });
 
 // var ThermoSchema = mongoose.Schema({
 //     $version : Number,
@@ -41,4 +42,4 @@ var thermo = mongoose.Schema({
 //     target_temperature_type : String
 // });
 
-module.exports = mongoose.model('Thermo', thermo);
+module.exports = mongoose.model('ThermoRecord', record);
