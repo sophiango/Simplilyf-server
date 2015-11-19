@@ -1,11 +1,14 @@
 var mongoose = require ('mongoose');
 
-var ThermoSchema = mongoose.Schema({
+var thermo = mongoose.Schema({
   created_at:{type:Date, default: Date.now},
   thermo_name : String,
-  current_temp : Number,
+  target_temperature : Number,
+  target_temperature_high : Number,
+  target_temperature_low : Number,
+  target_temperature_mode : String,
   user_id : String,
-  thermo_id : String,
+  thermo_id : {type:String,unique:true, required:true,dropDups: true},
   thermo_mode : String,
   operation : Number
 });
@@ -38,4 +41,4 @@ var ThermoSchema = mongoose.Schema({
 //     target_temperature_type : String
 // });
 
-module.exports = mongoose.model('Thermo', ThermoSchema);
+module.exports = mongoose.model('Thermo', thermo);

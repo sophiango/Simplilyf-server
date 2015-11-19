@@ -5,13 +5,13 @@ var thermoSchema = new mongoose.Schema({
 	vendor:String,
 	thermo_id:String,
 	thermo_name:String
-});
+},{ _id : false });
 
 var lightSchema = new mongoose.Schema({
 	vendor:String,
 	light_id:String,
 	light_name:String
-});
+},{ _id : false });
 
 module.exports = mongoose.model('User',{
 	user_id: {type : String , required : true, unique: true, dropDups: true},

@@ -12,6 +12,6 @@ var LightSchema = new mongoose.Schema({
 	reachable : Boolean,
   	type : String,
   	operation : Number
-});
+},{ _id : false });
 
 module.exports = mongoose.model('Light', LightSchema, 'light_data');

@@ -4,7 +4,7 @@ var app = express();
 var Hue = require('philips-hue-api');
 var username = 'newdeveloper';
 var Light = require('../models/light');
-
+var User = require('../models/user');
 //app.use(logger('dev'));
 //app.use(cookieParser());
 //app.use(bodyParser.json());
@@ -29,6 +29,40 @@ var LOCAL_URL = 'http://localhost:8000/api/newdeveloper/';
 //     });
 // });
 // get all lights data
+
+router.post('/new',function(req,res){
+  var username = req.body.username;
+  var newLight = [
+     {
+      vendor:'philip',
+      thermo_id:'1',
+      thermo_name:'test1'},
+      {
+        vendor:'philip',
+        thermo_id:'2',
+        thermo_name:'test2'},
+      {
+        vendor:'philip',
+        thermo_id:'3',
+        thermo_name:'test3'}
+    ];
+  // var userEmail = req.user.username;
+  User.findOneAndUpdate(
+      { 'email' :  username},
+      {$push: {lights:newLight}},
+      {safe: true, upsert: true},
+      function(err, model) {
+        if (err){
+          res.status(200);
+          res.send(err);
+        } else {
+          res.status(200);
+          res.send(newLight);
+        }
+      }
+    );
+});
+
 router.get('/getall', function(req,res){
   hue = Hue(LOCAL_URL);
   hue.lights().list(function(error, lights){
@@ -208,6 +242,6 @@ router.post('/change/:light_id/:colorname', function(req,res){
       }
     );
     });
-  });  
+  });
 
 module.exports = router;

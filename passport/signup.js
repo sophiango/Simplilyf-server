@@ -10,7 +10,7 @@ module.exports = function(passport){
         },
     function(req, username, password, done) {
 			var email = req.body.email;
-			console.log('Signing up');
+			console.log('Signing up ' + email);
 
             findOrCreateUser = function(){
                 // find a user in Mongo with provided username
@@ -25,7 +25,8 @@ module.exports = function(passport){
                     // already exists
                     if (user) {
                         //console.log('User already exists with username: '+ email);
-                        return done(null, false, req.flash('message','User Already Exists'));
+                        //return done(null, false, req.flash('message','User Already Exists'));
+												return done(null,false);
 												//res.send('User already exists with email');
                     } else {
                         // if there is no user with that email
@@ -43,6 +44,8 @@ module.exports = function(passport){
                         newUser.password = createHash(password);
                         newUser.email = email;
                         newUser.firstName = fullname;
+												newUser.thermos = [];
+												newUser.lights = [];
 
                         // save the user
                         newUser.save(function(err) {
@@ -50,8 +53,8 @@ module.exports = function(passport){
                                 console.log('Error in Saving user: '+err);
                                 throw err;
                             } else {
-								console.log('successfully registered');
-								return done(null, newUser);
+												console.log('successfully registered');
+												return done(null, newUser);
 							}
                             //res.send('User Registration succesful',newUser);
 														//return res(null, newUser);
