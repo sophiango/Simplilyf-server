@@ -26,7 +26,7 @@ var chance = require('chance').Chance();
 //           for (var deviceId in data.device) {
 //               if (data.device.hasOwnProperty(deviceId)) {
 //                     device = data.shared[deviceId];
-//                     console.log(JSON.stringify(device.target_temperature_type));
+//                     console.log(data.device.nestSession);
 //                   // console.log(nest.getStructureId());
 //               }
 //           }
@@ -35,6 +35,8 @@ var chance = require('chance').Chance();
 //     }
 //   });
 // });
+
+/* POST /thermo/new  */
 
 router.post('/new', function addNewThermo(req,res){
   if (req.user===undefined){
@@ -117,27 +119,33 @@ router.post('/new', function addNewThermo(req,res){
 } // else login
 });
 
+/* GET /thermo/all */
+router.get('/all',function getStatusAllThermo(req,res){
+  var devices = [];
+  nest.fetchStatus(function getData(data) {
+      for (var deviceId in data.device) {
+          if (data.device.hasOwnProperty(deviceId)) {
+              var device = data.shared[deviceId];
+              devices.push(device);
+          }
+      }
+    });
+    if (devices.length>0){
+      res.status(200);
+      res.send(devices);
+    } else {
+      res.status(400);
+      res.send('Error getting data');
+    }
+});
 
-
-// function subscribe() {
-//     nest.subscribe(subscribeDone, ['shared', 'energy_latest']);
-// };
-//
-// function subscribeDone(deviceId, data, type) {
-//     // data if set, is also stored here: nest.lastStatus.shared[thermostatID]
-//     if (deviceId) {
-//         console.log('Device: ' + deviceId + ' type: ' + type);
-//         console.log(JSON.stringify(data));
-//     } else {
-//         console.log('No data');
-//
-//     }
-//     setTimeout(subscribe, 2000);
-// };
-
+/* GET /thermo/:thermo_id */
 router.get('/:thermo_name',function getTempByName(req,res){
+  if (req.user===undefined){
+    res.status(400);
+    res.send('Lost session, unable to find user. Require user to login again');
+  } else {
   var thermo_name = req.params.thermo_name;
-  // set all
   var current_temp;
   nest.fetchStatus(function (data) {
     for (var deviceId in data.device) {
@@ -156,48 +164,59 @@ router.get('/:thermo_name',function getTempByName(req,res){
     res.status(400);
     res.send('Cannot fetch data');
   }
+}
 });
 
-// change to put instead
+/* PUT /thermo with {thermo_name, updated_temp, thermo_id} */
 router.put('/', function changeTempByName(req,res){
     var thermo_name = req.body.thermo_name;
     var updated_temp = req.body.updated_temp;
     var thermo_id = req.body.thermo_id;
+    var target_temperature_high = 0;
+    var target_temperature_low = 0;
+    var target_temperature_mode = '';
     //var userId = req.user.user_id;
-    var success = false;
     nest.fetchStatus(function (data) {
+    if (data){
       for (var deviceId in data.device) {
         if (data.device.hasOwnProperty(deviceId)) {
             var device = data.shared[deviceId];
             if (device.name == thermo_name){
                 nest.setTemperature(deviceId, updated_temp);
-                if(nest.ctof(device.target_temperature)===updated_temp){
-                  success = true;
-                }
-            }
+                target_temperature_high = nest.ctof(device.target_temperature_high);
+                target_temperature_low = nest.ctof(device.target_temperature_low);
+                target_temperature_type = device.target_temperature_type;
+
+                  var newThermoRecord = new Thermo({
+                    thermo_name : thermo_name,
+                    target_temperature : updated_temp,
+                    target_temperature_high : target_temperature_high,
+                    target_temperature_low : target_temperature_low,
+                    target_temperature_mode : target_temperature_type,
+                    user_id : req.user.user_id,
+                    thermo_id : thermo_id,
+                    thermo_mode : 'home',
+                    operation : 1,
+                  });
+
+                  newThermoRecord.save(function(err){
+                    if (err){
+                      res.status(400);
+                      res.send('Unable to change the temperature. Please try again later');
+                    } else {
+                      res.status(200);
+                      res.send("Successfully change the temperature of " + thermo_name + " to " + updated_temp);
+                    }
+                  });
+
+            } // end if device name == thermo name
         }
       }
-
-      // console.log('user id: ' + userId);
-      // if (success === true){
-      // var newThermoRecord = {
-      //   thermo_name : thermo_name,
-      //   current_temp : updated_temp,
-      //   user_id : userId,
-      //   thermo_id : thermo_id,
-      //   thermo_mode : "away",
-      //   operation : 1
-      // };
-      // console.log("success? " + success);
-      //   res.status(200);
-      //   res.send('Successfully change temperature to ' + updated_temp);
-      // } else {
-      //   res.status(400);
-      //   res.send('Unable to change the temperature. Please try again later');
-      // }
-      res.status(200);
-      res.send("Successfully change the temperature of " + thermo_name + " to " + updated_temp);
-    });
+    } else {
+      res.status(400);
+      res.send('Unable to fetch data');
+    }
+  }); // end nest fetchData
 });
 
 router.post('/all', function changeTemp(req,res){
@@ -276,18 +295,6 @@ router.put('/mode', function setAwayMode(req,res){
     res.status(200);
     res.send('Successfully set mode to ' + mode);
   });
-});
-
-router.get('/all',function getStatusAllThermo(req,res){
-  nest.fetchStatus(function getData(data) {
-      for (var deviceId in data.device) {
-          if (data.device.hasOwnProperty(deviceId)) {
-              var device = data.shared[deviceId];
-              console.log('deviceid: ' + deviceId);
-          }
-      }
-    });
-    res.send('Get all Successfully ');
 });
 
 module.exports = router;
