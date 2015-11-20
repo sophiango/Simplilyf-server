@@ -4,7 +4,6 @@ var express = require('express');
 var router = express.Router();
 var app = express();
 var Hue = require('philips-hue-api');
-var username = 'newdeveloper';
 var LightRecord = require('../models/light');
 var User = require('../models/user');
 var chance = require('chance').Chance();
@@ -78,11 +77,6 @@ router.post('/new',function(req,res){
   }
   }, 1000);
 });
-
-router.post('/off/all', function turnOffAllLight(req,res){
-
-});
-
 
 router.get('/getall', function(req,res){
   hue = Hue(LOCAL_URL);
