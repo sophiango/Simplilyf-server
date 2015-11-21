@@ -89,7 +89,12 @@ router.get('/getall', function(req,res){
       res.send(error);
       return;
     } else {
-      lights.push(light);
+      var single_light = {
+        status : light.state.on,
+        hue : light.state.hue,
+        name : light.name
+      }
+      lights.push(single_light);
     }
   });
   }
