@@ -16,41 +16,117 @@ var nest = require('unofficial-nest-api');
 
 module.exports = function(passport){
 	/* Handle Login POST */
-	router.post('/signin', passport.authenticate('signin'), function(req,res){
-		if (req.isAuthenticated()){
-      var thermoAcc;
-      var lightAcc;
-      var user = req.user;
-      if (req.user.devicesAcc.length > 0){
-        for (var i = 0; i < user.devicesAcc.length; i++){
-            if (user.devicesAcc[i].vendor==='nest'){
-              thermoAcc = user.devicesAcc[i];
-            } else if (user.devicesAcc[i].vendor==='philips'){
-              lightAcc = user.devicesAcc[i];
-            }
-        }
-      }
+	// router.post('/signin', passport.authenticate('signin'), function(req,res){
+	// 	if (!req.isAuthenticated()){
+	// 		res.status(400);
+  //     res.send('Error');
+	// 		return;
+  //   }
+	//
+  //   var thermoAcc;
+  //   var lightAcc;
+  //   var user = req.user;
+  //   if (req.user.devicesAcc.length > 0){
+  //     for (var i = 0; i < user.devicesAcc.length; i++){
+  //         if (user.devicesAcc[i].vendor==='nest'){
+  //           thermoAcc = user.devicesAcc[i];
+  //         } else if (user.devicesAcc[i].vendor==='philips'){
+  //           lightAcc = user.devicesAcc[i];
+  //         }
+  //     }
+  //   }
+	// 	var callbackSemaphore = 0;
+	// 	var loginFailures = 0;
+  //   if(thermoAcc!==undefined){
+	// 		callbackSemaphore++;
+	// 		//console.log('Logging to Nest to create Nest session ');
+  //     var username = thermoAcc.username;
+  //     var password = thermoAcc.password;
+  //     nest.login(username, password, function (err, data) {
+	// 			callbackSemaphore--;
+  //       if (err) {
+  //         console.log(err);
+	// 				loginFailures++;
+  //       }
+	// 			if (data) {
+	// 				console.log('Logging to Nest to create Nest session ' + username + ' ' + password);
+	// 			}
+  //     });
+  //   }
+  //   if(lightAcc!==undefined){
+	// 		//callbackSemaphore++;
+  //     //console.log('Logging to Philips to create Philips session ' + lightAcc);
+  //   }
+	// 	var successCallback = function() {
+	// 		if (!callbackSemaphore) {
+	// 			if (loginFailures > 0) {
+	// 				res.status(403);
+	// 				res.send('Error');
+	// 			} else {
+	// 				res.status(200);
+	// 				res.send(req.user);
+	// 			}
+	// 		} else {
+	// 			setTimeout(successCallback, 1000);
+	// 		}
+	// 	}
+	// 	successCallback();
+  // });
 
-      if(thermoAcc!==undefined){
-        console.log('Logging to Nest to create Nest session ' + thermoAcc);
-        var username = thermoAcc.username;
-        var password = thermoAcc.password;
-        nest.login(username, password, function (err, data) {
-          if (err) {
-              res.status(400);
-              res.send(err);
-          }
-        });
-      }
-      if(lightAcc!==undefined){
-        console.log('Logging to Philips to create Philips session ' + lightAcc);
-      }
-      res.status(200);
-			res.send(req.user);
-		} else {
-      res.status(400);
-      res.send('Error');
-    }
+	router.post('/signin', passport.authenticate('signin'), function(req,res){
+		if (!req.isAuthenticated()){
+			res.status(400);
+			res.send('Error');
+			return;
+		}
+		var thermoAcc;
+		var lightAcc;
+		var user = req.user;
+		if (req.user.devicesAcc.length > 0){
+			for (var i = 0; i < user.devicesAcc.length; i++){
+					if (user.devicesAcc[i].vendor==='nest'){
+						thermoAcc = user.devicesAcc[i];
+					} else if (user.devicesAcc[i].vendor==='philips'){
+						lightAcc = user.devicesAcc[i];
+					}
+			}
+		}
+		var callbackSemaphore = 0;
+		var loginFailures = 0;
+		if(thermoAcc!==undefined){
+			callbackSemaphore++;
+			//console.log('Logging to Nest to create Nest session ');
+			var username = thermoAcc.username;
+			var password = thermoAcc.password;
+			nest.login(username, password, function (err, data) {
+				callbackSemaphore--;
+				if (err) {
+					console.log(err);
+					loginFailures++;
+				}
+				if (data) {
+					console.log('Logging to Nest to create Nest session ' + username + ' ' + password);
+				}
+			});
+		}
+		if(lightAcc!==undefined){
+			//callbackSemaphore++;
+			//console.log('Logging to Philips to create Philips session ' + lightAcc);
+		}
+		var successCallback = function() {
+			if (!callbackSemaphore) {
+				if (loginFailures > 0) {
+					res.status(403);
+					res.send('Error');
+				} else {
+					res.status(200);
+					res.send(req.user);
+				}
+			} else {
+				setTimeout(successCallback, 1000);
+			}
+		}
+		successCallback();
 	});
 
 	/* Handle Registration POST */

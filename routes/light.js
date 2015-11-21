@@ -102,10 +102,7 @@ router.get('/getlight/:light_id', function(req,res){
 
 // switching light on
 router.post('/on/:light_id', function(req,res){
-  if (req.user===undefined){
-    res.status(400);
-    res.send('User must login with the application before adding device');
-  } else {
+  var user_id = req.body.user_id;
   var light_id = req.params.light_id;
   hue = Hue(LOCAL_URL);
   hue.lights(parseInt(light_id)).on();
@@ -126,7 +123,7 @@ router.post('/on/:light_id', function(req,res){
         	reachable : light.reachable,
           type : light.type,
           operation : 'switched on light',
-          user_id : req.user.user_id
+          user_id : user_id
         });
         newLightRecord.save(function(err){
           if (err){
@@ -139,15 +136,12 @@ router.post('/on/:light_id', function(req,res){
         });
       }
     });
-  }
 });
 
 // switching ALL lights on
 router.post('/all/on', function(req,res){
-  if (req.user===undefined){
-    res.status(400);
-    res.send('User must login with the application before adding device');
-  } else {
+    var user_id = req.body.user_id;
+    var lights = [];
     var successCount = 0;
     var message = '';
     hue = Hue(LOCAL_URL);
@@ -158,6 +152,7 @@ router.post('/all/on', function(req,res){
           if(error){
               message = message + error;
             } else {
+              lights.push(light);
               var newLightRecord = new LightRecord({
                 record_id : chance.natural({min: 1, max: 100000000}).toString(),
                 light_id : light_id,
@@ -170,7 +165,7 @@ router.post('/all/on', function(req,res){
                 reachable : light.reachable,
                 type : light.type,
                 operation : 'switched on light',
-                user_id : req.user.user_id
+                user_id : user_id
               });
               newLightRecord.save(function(err){
                 if (err){
@@ -185,21 +180,17 @@ router.post('/all/on', function(req,res){
   setTimeout(function(){
   if (successCount===available_lights){
     res.status(200);
-    res.send('Successfully turn on all lights in the house');
+    res.send(lights);
   } else {
     res.status(400);
-    res.send('Not able to turn on all lights in the house ' + message);
+    res.send(message);
   }
   }, 1000);
-} // end else
 });
 
 // switching light off
 router.post('/off/:light_id', function(req,res){
-  if (req.user===undefined){
-    res.status(400);
-    res.send('User must login with the application before adding device');
-  } else {
+  var user_id = req.body.user_id;
   var light_id = req.params.light_id;
   hue = Hue(LOCAL_URL);
   hue.lights(parseInt(light_id)).off();
@@ -220,7 +211,7 @@ router.post('/off/:light_id', function(req,res){
         	reachable : light.reachable,
           type : light.type,
           operation : 'switched off light',
-          user_id : req.user.user_id
+          user_id : user_id
         });
         newLightRecord.save(function(err){
           if (err){
@@ -233,15 +224,12 @@ router.post('/off/:light_id', function(req,res){
         });
       }
     });
-  }
 });
 
 // switching ALL lights on
 router.post('/all/off', function(req,res){
-  if (req.user===undefined){
-    res.status(400);
-    res.send('User must login with the application before adding device');
-  } else {
+    var user_id = req.body.user_id;
+    var lights = [];
     var successCount = 0;
     var message = '';
     hue = Hue(LOCAL_URL);
@@ -252,6 +240,7 @@ router.post('/all/off', function(req,res){
           if(error){
               message = message + error;
             } else {
+              lights.push(light);
               var newLightRecord = new LightRecord({
                 record_id : chance.natural({min: 1, max: 100000000}).toString(),
                 light_id : light_id,
@@ -264,7 +253,7 @@ router.post('/all/off', function(req,res){
                 reachable : light.reachable,
                 type : light.type,
                 operation : 'switched off light',
-                user_id : req.user.user_id
+                user_id : user_id
               });
               newLightRecord.save(function(err){
                 if (err){
@@ -279,21 +268,17 @@ router.post('/all/off', function(req,res){
   setTimeout(function(){
   if (successCount===available_lights){
     res.status(200);
-    res.send('Successfully turn off all lights in the house');
+    res.send(lights);
   } else {
     res.status(400);
-    res.send('Not able to turn off all lights in the house ' + message);
+    res.send(message);
   }
   }, 1000);
-} // end else
 });
 
 // changing color
 router.post('/color/:light_id/:colorname', function(req,res){
-  if (req.user===undefined){
-    res.status(400);
-    res.send('User must login with the application before adding device');
-  } else {
+  var user_id = req.body.user_id;
   var light_id = req.params.light_id;
   var new_color = req.params.colorname;
   console.log('light: ' + light_id + ' color: ' + new_color);
@@ -316,7 +301,7 @@ router.post('/color/:light_id/:colorname', function(req,res){
         	reachable : light.reachable,
           type : light.type,
           operation : 'change color',
-          user_id : req.user.user_id
+          user_id : user_id
         });
         newLightRecord.save(function(err){
           if (err){
@@ -329,15 +314,12 @@ router.post('/color/:light_id/:colorname', function(req,res){
         });
       }
     });
-  }
 });
 
 // changing ALL lights color on
 router.post('/all/color/:colorname', function(req,res){
-  if (req.user===undefined){
-    res.status(400);
-    res.send('User must login with the application before adding device');
-  } else {
+    var user_id = req.body.user_id;
+    var lights = [];
     var successCount = 0;
     var message = '';
     hue = Hue(LOCAL_URL);
@@ -350,6 +332,7 @@ router.post('/all/color/:colorname', function(req,res){
           if(error){
               message = message + error;
             } else {
+              lights.push(light);
               var newLightRecord = new LightRecord({
                 record_id : chance.natural({min: 1, max: 100000000}).toString(),
                 light_id : light_id,
@@ -362,7 +345,7 @@ router.post('/all/color/:colorname', function(req,res){
                 reachable : light.reachable,
                 type : light.type,
                 operation : 'change color',
-                user_id : req.user.user_id
+                user_id : user_id
               });
               newLightRecord.save(function(err){
                 if (err){
@@ -377,13 +360,12 @@ router.post('/all/color/:colorname', function(req,res){
   setTimeout(function(){
   if (successCount===available_lights){
     res.status(200);
-    res.send('Successfully change color of all lights in the house');
+    res.send(lights);
   } else {
     res.status(400);
-    res.send('Not able to change color of all lights in the house ' + message);
+    res.send(message);
   }
   }, 1000);
-} // end else
 });
 
 module.exports = router;

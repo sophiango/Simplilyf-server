@@ -21,7 +21,6 @@ var deviceAccount = new mongoose.Schema({
 
 module.exports = mongoose.model('User',{
 	user_id: {type : String , required : true, unique: true, dropDups: true},
-	username: {type : String , required : true},
 	password: String,
 	fullname: String,
 	email: {type : String , required : true},

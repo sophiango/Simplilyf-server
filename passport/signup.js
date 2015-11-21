@@ -31,7 +31,7 @@ module.exports = function(passport){
                     } else {
                         // if there is no user with that email
                         // create the user
-												var username = req.body.username;
+												var email = req.body.email;
 												var password = req.body.password;
 												var fullname = req.body.fullname;
 												var random_id = chance.natural({min: 1, max: 100000}).toString();
@@ -40,10 +40,9 @@ module.exports = function(passport){
 
                         // set the user's local credentials
 												newUser.user_id = random_id;
-                        newUser.username = username;
                         newUser.password = createHash(password);
                         newUser.email = email;
-                        newUser.firstName = fullname;
+                        newUser.fullname = fullname;
 												newUser.thermos = [];
 												newUser.lights = [];
 
