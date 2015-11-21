@@ -81,7 +81,13 @@ router.post('/new',function(req,res){
 router.get('/getall', function(req,res){
   hue = Hue(LOCAL_URL);
   hue.lights().list(function(error, lights){
-    console.log(lights);
+    if(error){
+      res.status(400);
+      res.send(error);
+    } else {
+      res.status(200);
+      res.send(lights);
+    }
   });
 });
 
