@@ -363,6 +363,7 @@ router.put('/mode', function setAwayMode(req,res){
 router.put('/temp_mode', function setAwayMode(req,res){
   var user_id = req.body.user_id;
   var temp_mode = req.body.temp_mode;
+  var thermo_name = req.body.thermo_name;
   var target_temperature_high = 0;
   var target_temperature_low = 0;
   var target_temperature_mode = '';
@@ -374,18 +375,18 @@ router.put('/temp_mode', function setAwayMode(req,res){
     if (data){
       for (var deviceId in data.device) {
           if (data.device.hasOwnProperty(deviceId)) {
-            numThermostat++;
-                  var device = data.shared[deviceId];
+              var device = data.shared[deviceId];
+              if (device.name===thermo_name){
                   // here's the device and ID
                   nest.setTargetTemperatureType(temp_mode);
                   operation='set temperature mode';
                   target_temperature = nest.ctof(device.target_temperature);
                   target_temperature_high = nest.ctof(device.target_temperature_high);
                   target_temperature_low = nest.ctof(device.target_temperature_low);
-                  target_temperature_type = device.target_temperature_type;
+                  target_temperature_type = temp_mode;
                     var newThermoRecord = new ThermoRecord({
                       record_id:chance.natural({min: 1, max: 100000000}).toString(),
-                      thermo_name : device.name,
+                      thermo_name : thermo_name,
                       target_temperature : target_temperature,
                       target_temperature_high : target_temperature_high,
                       target_temperature_low : target_temperature_low,
@@ -402,6 +403,7 @@ router.put('/temp_mode', function setAwayMode(req,res){
                         successCount++;
                       }
                     });
+                }
           }
       }
       setTimeout(function(){

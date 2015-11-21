@@ -140,12 +140,13 @@ router.post('/on/:light_id', function(req,res){
 
 // switching ALL lights on
 router.post('/all/on', function(req,res){
-    var user_id = req.body.user_id;
+    var user_id = '5790';
+    // var user_id = req.body.user_id;
     var lights = [];
     var successCount = 0;
     var message = '';
     hue = Hue(LOCAL_URL);
-    var available_lights = req.user.lights.length;
+    var available_lights = 3;
     for (var light_id = 1; light_id <= available_lights; light_id++){
         hue.lights(parseInt(light_id)).on();
         hue.lights(parseInt(light_id)).getState(function(error, light){
@@ -233,7 +234,7 @@ router.post('/all/off', function(req,res){
     var successCount = 0;
     var message = '';
     hue = Hue(LOCAL_URL);
-    var available_lights = req.user.lights.length;
+    var available_lights = 3;
     for (var light_id = 1; light_id <= available_lights; light_id++){
         hue.lights(parseInt(light_id)).off();
         hue.lights(parseInt(light_id)).getState(function(error, light){
@@ -323,7 +324,7 @@ router.post('/all/color/:colorname', function(req,res){
     var successCount = 0;
     var message = '';
     hue = Hue(LOCAL_URL);
-    var available_lights = req.user.lights.length;
+    var available_lights = 3;
     var new_color = req.params.colorname;
     console.log('color: ' + new_color);
     for (var light_id = 1; light_id <= available_lights; light_id++){
