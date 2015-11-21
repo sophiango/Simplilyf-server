@@ -79,16 +79,29 @@ router.post('/new',function(req,res){
 });
 
 router.get('/getall', function(req,res){
+  var lights = [];
+  var available_lights = 3;
   hue = Hue(LOCAL_URL);
-  hue.lights().list(function(error, lights){
+  for (var light_id = 1; light_id <= available_lights; light_id++){
+  hue.lights(parseInt(light_id)).getState(function(error, light){
     if(error){
       res.status(400);
       res.send(error);
+      return;
     } else {
-      res.status(200);
-      res.send(lights);
+      lights.push(light);
     }
   });
+  }
+  var successCallback = function() {
+      if (lights.length===3) {
+        res.status(200);
+        res.send(lights);
+      } else {
+        setTimeout(successCallback, 1000);
+      }
+  }
+  successCallback();
 });
 
 // get one particular light data
