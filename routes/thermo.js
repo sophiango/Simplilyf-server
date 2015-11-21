@@ -21,6 +21,7 @@ router.post('/new', function addNewThermo(req,res){
     if (err) {
         res.status(403);
         res.send(err);
+        return;
     } else {
       var thermo_name;
       var target_temperature;
@@ -33,6 +34,7 @@ router.post('/new', function addNewThermo(req,res){
         if (!data){
           res.status(400);
           res.send('No data response');
+          return;
         } else {
           var input_vendor = req.body.vendor;
           var response = '';
@@ -50,8 +52,6 @@ router.post('/new', function addNewThermo(req,res){
                   target_temperature_low = nest.ctof(device.target_temperature_low);
                   target_temperature_mode = device.target_temperature_type;
                   thermo_mode = 'home';
-
-
                   // create new thermo record
                   var newThermoRecord = new ThermoRecord({
                     record_id:chance.natural({min: 1, max: 100000000}).toString(),
@@ -101,8 +101,7 @@ router.post('/new', function addNewThermo(req,res){
               {safe: true, upsert: true},
               function(err, model) {
                 if (err){
-                  res.status(400);
-                  res.send(err);
+                  message = message + err;
                 } else {
                   successCount++;
                 }
@@ -114,8 +113,7 @@ router.post('/new', function addNewThermo(req,res){
             {safe: true, upsert: true},
             function(err, model) {
               if (err){
-                res.status(400);
-                res.send(err);
+                message = message + err;
               } else {
                 successCount++;
               }
@@ -127,7 +125,7 @@ router.post('/new', function addNewThermo(req,res){
               res.send(JSON.stringify(sendPackage));
             } else {
             res.status(400);
-            res.send('Unable to change the temperature for all thermostat');
+            message = message + 'Unable to change the temperature for all thermostat';
           }
           }, 1000);
 
@@ -153,7 +151,7 @@ router.get('/all',function getStatusAllThermo(req,res){
         res.send(devices);
       } else {
         res.status(400);
-        res.send('Error getting data');
+        res.send(message);
       }
     });
 });
