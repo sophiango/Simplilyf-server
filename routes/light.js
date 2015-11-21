@@ -16,10 +16,12 @@ var LOCAL_URL = 'http://localhost:8000/api/newdeveloper/';
 
 
 router.post('/new',function(req,res){
+  console.log('Adding new Philips account');
   var successCount = 0;
   var message = '';
   var username = req.body.username;
   var password = req.body.password;
+  var email = req.body.email;
   var newLight = [
      {
       vendor:'philips',
@@ -35,8 +37,9 @@ router.post('/new',function(req,res){
         light_name:'light3'}
     ];
   // var userEmail = req.user.username;
+  console.log('Update user account - lights');
   User.findOneAndUpdate(
-      { 'email' :  username},
+      { 'email' :  email},
       {$set: {lights:newLight}},
       {safe: true, upsert: true},
       function(err, model) {
@@ -53,8 +56,9 @@ router.post('/new',function(req,res){
       username:username,
       password:password
     }
+    console.log('Update user account - device account');
     User.findOneAndUpdate(
-        { 'email' :  req.user.email},
+        { 'email' :  email},
     {$push:{devicesAcc:philipsAcc}},
     {safe: true, upsert: true},
     function(err, model) {
@@ -66,14 +70,36 @@ router.post('/new',function(req,res){
       }
     }
   );
+  var lights = [];
+  var available_lights = 3;
+  hue = Hue(LOCAL_URL);
+  console.log('Getting 3 lights');
+  for (var light_id = 1; light_id <= available_lights; light_id++){
+    hue.lights(parseInt(light_id)).getState(function(error, light){
+      if(error){
+        res.status(400);
+        console.log(err);
+        res.send(error);
+        return;
+      } else {
+        successCount++;
+        var single_light = {
+          status : light.state.on,
+          hue : light.state.hue,
+          name : light.name
+        }
+        lights.push(single_light);
+      }
+    });
+  }
   setTimeout(function(){
-  if (successCount>=2){
+  if (successCount===5){
+    console.log(lights);
     res.status(200);
-    res.send('Successfully added light(s) to user account');
+    res.send(lights);
   } else {
     res.status(400);
-    console.log('message: ' + message);
-    res.send(message);
+    res.send('Error completing all tasks');
   }
   }, 1000);
 });

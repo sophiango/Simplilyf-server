@@ -293,6 +293,27 @@ router.put('/all', function changeTempAllThermo(req,res){
   }); // end nest fetchData
 });
 
+router.put('/test', function setAwayMode(req,res){
+  nest.fetchStatus(function (data) {
+    if (data){
+      if(req.body.mode==='away'){
+          nest.setAway();
+      } else if (req.body.mode==='home'){
+          nest.setHome();
+      }
+      // for (var deviceId in data.device) {
+      //     if (data.device.hasOwnProperty(deviceId)) {
+      //       if(req.body.mode==='away'){
+      //           nest.setAway();
+      //       } else if (req.body.mode==='home'){
+      //           nest.setHome();
+      //       }
+      //     }
+      //   }
+      }
+    });
+});
+
 // When setting away mode, all thermostat in the houses will be change status
 router.put('/mode', function setAwayMode(req,res){
   var user_id = req.body.user_id;
@@ -310,6 +331,7 @@ router.put('/mode', function setAwayMode(req,res){
           if (data.device.hasOwnProperty(deviceId)) {
             numThermostat++;
                   var device = data.shared[deviceId];
+                  console.log('Nest mode is ' + mode);
                   // here's the device and ID
                   if (mode==='away'){
                       nest.setAway();
