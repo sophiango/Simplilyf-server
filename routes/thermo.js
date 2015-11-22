@@ -139,21 +139,52 @@ router.post('/new', function addNewThermo(req,res){
 /* GET /thermo/all -- Get all the information of the thermostat */
 router.get('/all',function getStatusAllThermo(req,res){
     var devices = [];
+    var thermo_name;
+    var target_temperature;
+    var target_temperature_high;
+    var target_temperature_low;
+    var target_temperature_mode;
+    var thermo_mode;
+    var available_thermos = 0;
     nest.fetchStatus(function getData(data) {
+      if (!data){
+        res.status(400);
+        res.send('Error fetching data');
+        return;
+      } else {
         for (var deviceId in data.device) {
+          available_thermos++;
             if (data.device.hasOwnProperty(deviceId)) {
                 var device = data.shared[deviceId];
-                devices.push(device);
+                // var rand_thermo_id = chance.natural({min: 1, max: 10000}).toString();
+                thermo_name = device.name;
+                target_temperature= nest.ctof(device.target_temperature);
+                target_temperature_high = nest.ctof(device.target_temperature_high);
+                target_temperature_low = nest.ctof(device.target_temperature_low);
+                target_temperature_mode = device.target_temperature_type;
+                thermo_mode = 'home';
+                // create new thermo record
+                devices.push({
+                  thermo_name : thermo_name,
+                  target_temperature : target_temperature,
+                  target_temperature_high : target_temperature_high,
+                  target_temperature_low : target_temperature_low,
+                  target_temperature_mode : target_temperature_mode,
+                  thermo_mode : thermo_mode
+                });
             }
         }
-      if (devices.length>0){
-        res.status(200);
-        res.send(devices);
-      } else {
-        res.status(400);
-        res.send(message);
       }
     });
+    setTimeout(function(){
+    if (available_thermos===devices.length){
+      res.status(200);
+      res.send(devices);
+    } else {
+      res.status(400);
+      res.send('Unable to change the temperature for all thermostat');
+    }
+    }, 1000);
 });
 
 /* GET /thermo/:thermo_id  -- Get the temperature of a specific thermostat by passing the thermostat name*/
