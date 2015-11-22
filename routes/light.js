@@ -77,9 +77,7 @@ router.post('/new',function(req,res){
   for (var light_id = 1; light_id <= available_lights; light_id++){
     hue.lights(parseInt(light_id)).getState(function(error, light){
       if(error){
-        res.status(400);
-        console.log(err);
-        res.send(error);
+        message = message + err;
         return;
       } else {
         successCount++;
@@ -99,7 +97,7 @@ router.post('/new',function(req,res){
     res.send(lights);
   } else {
     res.status(400);
-    res.send('Error completing all tasks');
+    res.send(message);
   }
   }, 1000);
 });
