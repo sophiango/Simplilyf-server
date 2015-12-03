@@ -11,7 +11,6 @@ var chance = require('chance').Chance();
 
 router.post('/new', function addNewThermo(req,res){
     var successCount = 0;
-    var user_id = req.body.user_id;
     var email = req.body.email;
     var fullname = req.body.fullname;
     var username = req.body.username;
