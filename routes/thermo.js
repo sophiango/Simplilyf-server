@@ -35,7 +35,7 @@ router.post('/new', function addNewThermo(req,res){
           res.send('No data response');
           return;
         } else {
-          var input_vendor = req.body.vendor;
+          var input_vendor = 'nest';
           var response = '';
           var devices = [];
           var existing_devices = [];
@@ -59,7 +59,7 @@ router.post('/new', function addNewThermo(req,res){
                     target_temperature_high : target_temperature_high,
                     target_temperature_low : target_temperature_low,
                     target_temperature_mode : target_temperature_mode,
-                    user_id : user_id,
+                    user_id : email, // user_id is email
                     thermo_id : deviceId,
                     thermo_mode : thermo_mode,
                     operation : 'add thermo'

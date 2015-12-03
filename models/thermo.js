@@ -8,7 +8,7 @@ var record = mongoose.Schema({
   target_temperature_high : Number,
   target_temperature_low : Number,
   target_temperature_mode : String,
-  user_id : String,
+  email : String,
   thermo_id : String,
   thermo_mode : String,
   operation : String
