@@ -51,15 +51,14 @@ router.post('/new',function(req,res){
         }
       }
     );
-    var philipsAcc = {
-      vendor:'philips',
-      username:username,
+    var philip = {
+      username:email,
       password:password
     }
     console.log('Update user account - device account');
     User.findOneAndUpdate(
         { 'email' :  email},
-    {$push:{devicesAcc:philipsAcc}},
+    {$push:{philipAcc:philip}},
     {safe: true, upsert: true},
     function(err, model) {
       if (err){
@@ -102,35 +101,49 @@ router.post('/new',function(req,res){
   }, 1000);
 });
 
-router.get('/getall', function(req,res){
-  var lights = [];
-  var available_lights = 3;
-  hue = Hue(LOCAL_URL);
-  for (var light_id = 1; light_id <= available_lights; light_id++){
-  hue.lights(parseInt(light_id)).getState(function(error, light){
-    if(error){
+router.post('/getall', function(req,res){
+  var email = req.body.email;
+  console.log('email: ' + email);
+  User.findOne({ 'email' :  email},function(err,foundUser){
+    if (err){
       res.status(400);
-      res.send(error);
-      return;
+      res.send('No user found');
     } else {
-      var single_light = {
-        status : light.state.on,
-        hue : light.state.hue,
-        name : light.name
-      }
-      lights.push(single_light);
-    }
-  });
-  }
-  var successCallback = function() {
-      if (lights.length===3) {
-        res.status(200);
-        res.send(lights);
+      if (foundUser.lights.length==0){
+        res.status(400);
+        res.send('User has no lights registered');
       } else {
-        setTimeout(successCallback, 1000);
+        var lights = [];
+        var available_lights = 3;
+        hue = Hue(LOCAL_URL);
+        for (var light_id = 1; light_id <= available_lights; light_id++){
+        hue.lights(parseInt(light_id)).getState(function(error, light){
+          if(error){
+            res.status(400);
+            res.send(error);
+            return;
+          } else {
+            var single_light = {
+              status : light.state.on,
+              hue : light.state.hue,
+              name : light.name
+            }
+            lights.push(single_light);
+          }
+        });
+        }
+        var successCallback = function() {
+            if (lights.length===3) {
+              res.status(200);
+              res.send(lights);
+            } else {
+              setTimeout(successCallback, 1000);
+            }
+        }
+        successCallback();
       }
-  }
-  successCallback();
+      }
+  });
 });
 
 // get one particular light data

@@ -24,15 +24,21 @@ module.exports = function(passport){
 		var thermoAcc;
 		var lightAcc;
 		var user = req.user;
-		if (req.user.devicesAcc.length > 0){
-			for (var i = 0; i < user.devicesAcc.length; i++){
-					if (user.devicesAcc[i].vendor==='nest'){
-						thermoAcc = user.devicesAcc[i];
-					} else if (user.devicesAcc[i].vendor==='philips'){
-						lightAcc = user.devicesAcc[i];
-					}
-			}
+		if (req.user.nestAcc.length!=0){
+			thermoAcc = req.user.nestAcc[0];
 		}
+		if (req.user.philipAcc.length!=0){
+			lightAcc = req.user.philipAcc[0];
+		}
+		// if (req.user.nestAcc.length > 0){
+		// 	for (var i = 0; i < user.devicesAcc.length; i++){
+		// 			if (user.nestAcc[i].vendor==='nest'){
+		// 				thermoAcc = user.devicesAcc[i];
+		// 			} else if (user.devicesAcc[i].vendor==='philips'){
+		// 				lightAcc = user.devicesAcc[i];
+		// 			}
+		// 	}
+		// }
 		var callbackSemaphore = 0;
 		var loginFailures = 0;
 		if(thermoAcc!==undefined){
