@@ -71,7 +71,7 @@ router.post('/new',function(req,res){
   );
   var lights = [];
   var available_lights = 3;
-  hue = Hue(LOCAL_URL);
+  var hue = Hue(LOCAL_URL);
   console.log('Getting 3 lights');
   for (var light_id = 1; light_id <= available_lights; light_id++){
     hue.lights(parseInt(light_id)).getState(function(error, light){
@@ -115,7 +115,7 @@ router.post('/getall', function(req,res){
       } else {
         var lights = [];
         var available_lights = 3;
-        hue = Hue(LOCAL_URL);
+        var hue = Hue(LOCAL_URL);
         for (var light_id = 1; light_id <= available_lights; light_id++){
         hue.lights(parseInt(light_id)).getState(function(error, light){
           if(error){
@@ -149,7 +149,7 @@ router.post('/getall', function(req,res){
 // get one particular light data
 router.get('/getlight/:light_id', function(req,res){
   var light_id = req.params.light_id;
-  hue = Hue(LOCAL_URL);
+  var hue = Hue(LOCAL_URL);
   hue.lights(parseInt(light_id)).getState(function(error, light){
     if(error){
       res.status(400);
@@ -165,7 +165,7 @@ router.get('/getlight/:light_id', function(req,res){
 router.post('/on/:light_id', function(req,res){
   var user_id = req.body.user_id;
   var light_id = req.params.light_id;
-  hue = Hue(LOCAL_URL);
+  var hue = Hue(LOCAL_URL);
   hue.lights(parseInt(light_id)).on();
   hue.lights(parseInt(light_id)).getState(function(error, light){
     if(error){
@@ -206,7 +206,7 @@ router.post('/all/on', function(req,res){
     var lights = [];
     var successCount = 0;
     var message = '';
-    hue = Hue(LOCAL_URL);
+    var hue = Hue(LOCAL_URL);
     var available_lights = 3;
     for (var light_id = 1; light_id <= available_lights; light_id++){
         hue.lights(parseInt(light_id)).on();
@@ -254,7 +254,7 @@ router.post('/all/on', function(req,res){
 router.post('/off/:light_id', function(req,res){
   var user_id = req.body.user_id;
   var light_id = req.params.light_id;
-  hue = Hue(LOCAL_URL);
+  var hue = Hue(LOCAL_URL);
   hue.lights(parseInt(light_id)).off();
   hue.lights(parseInt(light_id)).getState(function(error, light){
     if(error){
@@ -294,7 +294,7 @@ router.post('/all/off', function(req,res){
     var lights = [];
     var successCount = 0;
     var message = '';
-    hue = Hue(LOCAL_URL);
+    var hue = Hue(LOCAL_URL);
     var available_lights = 3;
     for (var light_id = 1; light_id <= available_lights; light_id++){
         hue.lights(parseInt(light_id)).off();
@@ -344,7 +344,7 @@ router.post('/color/:light_id/:colorname', function(req,res){
   var light_id = req.params.light_id;
   var new_color = req.params.colorname;
   console.log('light: ' + light_id + ' color: ' + new_color);
-  hue = Hue(LOCAL_URL);
+  var hue = Hue(LOCAL_URL);
   hue.lights(parseInt(light_id)).lightcolor(new_color);
   hue.lights(parseInt(light_id)).getState(function(error, light){
     if(error){
@@ -384,7 +384,7 @@ router.post('/all/color/:colorname', function(req,res){
     var lights = [];
     var successCount = 0;
     var message = '';
-    hue = Hue(LOCAL_URL);
+    var hue = Hue(LOCAL_URL);
     var available_lights = 3;
     var new_color = req.params.colorname;
     console.log('color: ' + new_color);

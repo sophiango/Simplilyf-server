@@ -34,7 +34,7 @@ router.post('/new', function addNewThermo(req,res){
           res.send('No data response');
           return;
         } else {
-          var nest = require('unofficial-nest-api');
+          // var nest = require('unofficial-nest-api');
           var input_vendor = 'nest';
           var response = '';
           var devices = [];
@@ -89,7 +89,7 @@ router.post('/new', function addNewThermo(req,res){
                   });
               }
           }
-          var nest = {
+          var nestAccount = {
             username:username,
             password:password
           }
@@ -109,7 +109,7 @@ router.post('/new', function addNewThermo(req,res){
             );
             User.findOneAndUpdate(
                 { 'email' :  email},
-            {$push:{nestAcc:nest}},
+            {$push:{nestAcc:nestAccount}},
             {safe: true, upsert: true},
             function(err, model) {
               if (err){
